@@ -75,84 +75,121 @@ function AdminCategoriesPage({ session, onUnauthorized, setGlobalLoading, notify
   }
 
   return (
-    <section className="card">
-      <h2>Categories</h2>
-      <form className="stack" onSubmit={createCategory}>
-        <input
-          placeholder="Category name"
-          value={createForm.name}
-          onChange={(event) => setCreateForm((prev) => ({ ...prev, name: event.target.value }))}
-          required
-        />
-        <input
-          placeholder="Description"
-          value={createForm.description}
-          onChange={(event) => setCreateForm((prev) => ({ ...prev, description: event.target.value }))}
-        />
-        <button type="submit">Add Category</button>
-      </form>
+    <div style={{ display: 'grid', gap: '2rem', gridTemplateColumns: '350px 1fr' }}>
+      
+      {/* Left side: Create form */}
+      <section className="pro-table-wrapper" style={{ padding: '1.5rem', alignSelf: 'start' }}>
+        <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', fontWeight: 600 }}>Create Category</h2>
+        <form onSubmit={createCategory}>
+          <div className="pro-form-group">
+            <label>Name</label>
+            <input
+              placeholder="e.g. Headphones"
+              value={createForm.name}
+              onChange={(event) => setCreateForm((prev) => ({ ...prev, name: event.target.value }))}
+              required
+            />
+          </div>
+          <div className="pro-form-group">
+            <label>Description</label>
+            <textarea
+              placeholder="Brief description"
+              value={createForm.description}
+              onChange={(event) => setCreateForm((prev) => ({ ...prev, description: event.target.value }))}
+              rows="3"
+            />
+          </div>
+          <button type="submit" className="pro-header-btn primary" style={{ width: '100%', justifyContent: 'center' }}>
+            Add Category
+          </button>
+        </form>
+      </section>
 
-      <div className="table-wrap">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((category) => (
-              <tr key={category.id}>
-                <td>{category.id}</td>
-                <td>
-                  {editId === category.id ? (
-                    <input
-                      value={editForm.name}
-                      onChange={(event) => setEditForm((prev) => ({ ...prev, name: event.target.value }))}
-                      required
-                    />
-                  ) : category.name}
-                </td>
-                <td>
-                  {editId === category.id ? (
-                    <input
-                      value={editForm.description}
-                      onChange={(event) => setEditForm((prev) => ({ ...prev, description: event.target.value }))}
-                    />
-                  ) : (category.description || '-')} 
-                </td>
-                <td>
-                  <div className="inline-actions">
-                    {editId === category.id ? (
-                      <>
-                        <button type="button" onClick={saveCategory}>Save</button>
-                        <button type="button" className="ghost" onClick={() => setEditId(null)}>Cancel</button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          className="ghost"
-                          onClick={() => {
-                            setEditId(category.id);
-                            setEditForm({ name: category.name, description: category.description || '' });
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button type="button" className="danger" onClick={() => deleteCategory(category.id)}>Delete</button>
-                      </>
-                    )}
-                  </div>
-                </td>
+      {/* Right side: Table */}
+      <section className="pro-table-wrapper">
+        <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>All Categories</h2>
+        </div>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="pro-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
+            </thead>
+            <tbody>
+              {categories.map((category) => (
+                <tr key={category.id}>
+                  <td><span style={{ opacity: 0.6 }}>#{category.id}</span></td>
+                  <td>
+                    {editId === category.id ? (
+                      <div className="pro-form-group" style={{ marginBottom: 0 }}>
+                        <input
+                          value={editForm.name}
+                          onChange={(event) => setEditForm((prev) => ({ ...prev, name: event.target.value }))}
+                          required
+                          style={{ padding: '8px 12px' }}
+                        />
+                      </div>
+                    ) : (
+                      <strong style={{ fontWeight: 500 }}>{category.name}</strong>
+                    )}
+                  </td>
+                  <td>
+                    {editId === category.id ? (
+                      <div className="pro-form-group" style={{ marginBottom: 0 }}>
+                        <input
+                          value={editForm.description}
+                          onChange={(event) => setEditForm((prev) => ({ ...prev, description: event.target.value }))}
+                          style={{ padding: '8px 12px' }}
+                        />
+                      </div>
+                    ) : (
+                      <span style={{ opacity: 0.8 }}>{category.description || '-'}</span>
+                    )}
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                      {editId === category.id ? (
+                        <>
+                          <button type="button" className="pro-header-btn primary" onClick={saveCategory} style={{ padding: '6px 12px' }}>Save</button>
+                          <button type="button" className="pro-header-btn" onClick={() => setEditId(null)} style={{ padding: '6px 12px' }}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            className="pro-header-btn"
+                            onClick={() => {
+                              setEditId(category.id);
+                              setEditForm({ name: category.name, description: category.description || '' });
+                            }}
+                            style={{ padding: '6px 12px' }}
+                          >
+                            Edit
+                          </button>
+                          <button type="button" className="pro-header-btn danger" onClick={() => deleteCategory(category.id)} style={{ padding: '6px 12px' }}>Delete</button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {categories.length === 0 && (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center', padding: '3rem', opacity: 0.5 }}>
+                    No categories found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   );
 }
 

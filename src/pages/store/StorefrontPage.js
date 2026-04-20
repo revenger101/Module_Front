@@ -5,6 +5,7 @@ import HeroSection from '../../components/store/HeroSection';
 import FiltersSidebar from '../../components/store/FiltersSidebar';
 import ProductGrid from '../../components/store/ProductGrid';
 import CartDrawer from '../../components/store/CartDrawer';
+import { notifyAdminCheckout } from '../../utils/emailService';
 import './StorefrontPage.css';
 
 const StorefrontPage = ({ session, onLogout }) => {
@@ -115,6 +116,19 @@ const StorefrontPage = ({ session, onLogout }) => {
     }
   };
 
+  const handleCheckout = async () => {
+    if (!session?.user) return;
+    
+    // Trigger the alert on the website
+    window.alert('Checkout initiated! An email notification has been sent.');
+    
+    // Close cart automatically
+    setIsCartOpen(false);
+    
+    // Send background EmailJS notification
+    await notifyAdminCheckout(session.user, cartTotal);
+  };
+
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
@@ -178,6 +192,7 @@ const StorefrontPage = ({ session, onLogout }) => {
         cartTotal={cartTotal}
         onUpdateQuantity={updateQuantity}
         onClearCart={clearCart}
+        onCheckout={handleCheckout}
       />
 
       {/* Stunning Login Required Toast */}

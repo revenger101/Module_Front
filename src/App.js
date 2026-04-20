@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { apiRequest } from './api/client';
+import { notifyAdminNewUser } from './utils/emailService';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import StorefrontPage from './pages/store/StorefrontPage';
@@ -143,6 +144,12 @@ function App() {
       setSignUpForm(defaultSignUp);
       setStatus(`Welcome ${data.user.username}`);
       notify('success', `Welcome ${data.user.username}`, false);
+      
+      // Notify Admin via EmailJS
+      notifyAdminNewUser({
+        username: data.user.username,
+        email: data.user.email || signUpForm.email || 'No email provided'
+      });
     } catch (error) {
       setStatus(error.message);
       notify('error', error.message, false);

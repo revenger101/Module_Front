@@ -6,7 +6,8 @@ const CartDrawer = ({
   cartData, 
   cartTotal, 
   onUpdateQuantity, 
-  onClearCart 
+  onClearCart,
+  onCheckout
 }) => {
   if (!isOpen) return null;
 
@@ -81,7 +82,7 @@ const CartDrawer = ({
           </div>
           <div className="cart-checkout-actions">
             <button className="clear-btn" onClick={onClearCart}>Clear Cart</button>
-            <button className="checkout-btn pro-btn primary-btn">Proceed to Checkout</button>
+            <button className="checkout-btn pro-btn primary-btn" onClick={onCheckout}>Proceed to Checkout</button>
           </div>
         </div>
       )}
